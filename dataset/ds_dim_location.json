@@ -1,0 +1,49 @@
+{
+	"name": "ds_dim_location",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseAirbnb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DW"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "distance_to_center_km",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 4
+			},
+			{
+				"name": "distance_to_metro_km",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 4
+			},
+			{
+				"name": "attraction_index",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 4
+			},
+			{
+				"name": "restaurant_index",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 4
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "dim_location"
+		}
+	}
+}

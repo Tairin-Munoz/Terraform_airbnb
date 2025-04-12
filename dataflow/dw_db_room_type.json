@@ -17,14 +17,17 @@
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "ds_dim_room_type",
-						"type": "DatasetReference"
-					},
 					"name": "sink1"
 				}
 			],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          City as string,",
@@ -50,21 +53,28 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
-				"source1 sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     input(",
-				"          id as integer,",
-				"          room_type as string,",
-				"          bedrooms as integer",
+				"source1 select(mapColumn(",
+				"          {Room Type},",
+				"          {Multiple Rooms},",
+				"          Bedrooms,",
+				"          Price",
 				"     ),",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 aggregate(groupBy({Room Type},",
+				"          {Multiple Rooms},",
+				"          Bedrooms),",
+				"     Price = first('Price')) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+				"     mapColumn(",
+				"          room_type = {Room Type},",
+				"          bedrooms = Bedrooms,",
+				"          id = {Multiple Rooms}",
+				"     ),",
+				"     format: 'table') ~> sink1"
 			]
 		}
 	}

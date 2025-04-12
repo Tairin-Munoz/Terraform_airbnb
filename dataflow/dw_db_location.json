@@ -24,7 +24,14 @@
 					"name": "sink1"
 				}
 			],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          City as string,",
@@ -50,14 +57,27 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
-				"source1 sink(allowSchemaDrift: true,",
+				"source1 select(mapColumn(",
+				"          City,",
+				"          {City Center (km)},",
+				"          {Metro Distance (km)},",
+				"          {Attraction Index},",
+				"          {Normalised Attraction Index},",
+				"          {Restraunt Index},",
+				"          {Normalised Restraunt Index}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 aggregate(groupBy({City Center (km)}),",
+				"     each(match(name != 'City Center (km)'), $$ = first($$))) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          id as integer,",
-				"          distance_to_center_km as decimal(5,2),",
-				"          distance_to_metro_km as decimal(5,2),",
-				"          attraction_index as decimal(5,2),",
-				"          restaurant_index as decimal(5,2)",
+				"          distance_to_center_km as decimal(10,4),",
+				"          distance_to_metro_km as decimal(10,4),",
+				"          attraction_index as decimal(10,4),",
+				"          restaurant_index as decimal(10,4)",
 				"     ),",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -66,7 +86,13 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          distance_to_center_km = {City Center (km)},",
+				"          attraction_index = {Metro Distance (km)},",
+				"          attraction_index = {Attraction Index},",
+				"          restaurant_index = {Restraunt Index}",
+				"     )) ~> sink1"
 			]
 		}
 	}

@@ -1,0 +1,37 @@
+{
+	"name": "ds_dim_host",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseAirbnb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DW"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "is_superhost",
+				"type": "bit"
+			},
+			{
+				"name": "has_multiple_rooms",
+				"type": "bit"
+			},
+			{
+				"name": "is_business_host",
+				"type": "bit"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "dim_host"
+		}
+	}
+}

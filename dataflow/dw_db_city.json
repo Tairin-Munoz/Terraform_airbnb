@@ -27,6 +27,12 @@
 			"transformations": [
 				{
 					"name": "select1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "sort1"
 				}
 			],
 			"scriptLines": [
@@ -55,32 +61,16 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
 				"source1 select(mapColumn(",
-				"          City,",
-				"          Price,",
-				"          Day,",
-				"          {Room Type},",
-				"          {Shared Room},",
-				"          {Private Room},",
-				"          {Person Capacity},",
-				"          Superhost,",
-				"          {Multiple Rooms},",
-				"          Business,",
-				"          {Cleanliness Rating},",
-				"          {Guest Satisfaction},",
-				"          Bedrooms,",
-				"          {City Center (km)},",
-				"          {Metro Distance (km)},",
-				"          {Attraction Index},",
-				"          {Normalised Attraction Index},",
-				"          {Restraunt Index},",
-				"          {Normalised Restraunt Index}",
+				"          City",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 sink(allowSchemaDrift: true,",
+				"select1 aggregate(groupBy(City),",
+				"     each(match(name != 'City'), $$ = first($$))) ~> aggregate1",
+				"aggregate1 sort(asc(City, true)) ~> sort1",
+				"sort1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
-				"          id as integer,",
 				"          city_name as string",
 				"     ),",
 				"     deletable:false,",
@@ -90,7 +80,10 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          city_name = City",
+				"     )) ~> sink1"
 			]
 		}
 	}

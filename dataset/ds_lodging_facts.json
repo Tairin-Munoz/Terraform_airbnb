@@ -1,0 +1,71 @@
+{
+	"name": "ds_lodging_facts",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseAirbnb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DW"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "price",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "cleanliness_rating",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "guest_satisfaction",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "person_capacity",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "city_id",
+				"type": "varchar"
+			},
+			{
+				"name": "date_id",
+				"type": "varchar"
+			},
+			{
+				"name": "room_type_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "host_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "location_id",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "lodging_facts"
+		}
+	}
+}
