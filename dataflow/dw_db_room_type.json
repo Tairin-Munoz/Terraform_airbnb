@@ -17,6 +17,10 @@
 			],
 			"sinks": [
 				{
+					"dataset": {
+						"referenceName": "ds_room_type",
+						"type": "DatasetReference"
+					},
 					"name": "sink1"
 				}
 			],
@@ -67,14 +71,23 @@
 				"     Price = first('Price')) ~> aggregate1",
 				"aggregate1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     input(",
+				"          id as integer,",
+				"          room_type as string,",
+				"          bedrooms as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
 				"          room_type = {Room Type},",
-				"          bedrooms = Bedrooms,",
-				"          id = {Multiple Rooms}",
-				"     ),",
-				"     format: 'table') ~> sink1"
+				"          bedrooms = Bedrooms",
+				"     )) ~> sink1"
 			]
 		}
 	}

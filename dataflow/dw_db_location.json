@@ -69,7 +69,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"select1 aggregate(groupBy({City Center (km)}),",
-				"     each(match(name != 'City Center (km)'), $$ = first($$))) ~> aggregate1",
+				"     each(match(name!='City Center (km)'), $$ = first($$))) ~> aggregate1",
 				"aggregate1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
@@ -89,7 +89,7 @@
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
 				"          distance_to_center_km = {City Center (km)},",
-				"          attraction_index = {Metro Distance (km)},",
+				"          distance_to_metro_km = {Metro Distance (km)},",
 				"          attraction_index = {Attraction Index},",
 				"          restaurant_index = {Restraunt Index}",
 				"     )) ~> sink1"

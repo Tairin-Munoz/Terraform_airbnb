@@ -17,12 +17,25 @@
 			],
 			"sinks": [
 				{
+					"dataset": {
+						"referenceName": "ds_lodging_facts",
+						"type": "DatasetReference"
+					},
 					"name": "sink1"
 				}
 			],
 			"transformations": [
 				{
 					"name": "select1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "surrogateKey1"
+				},
+				{
+					"name": "surrogateKey2"
 				}
 			],
 			"scriptLines": [
@@ -62,10 +75,36 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 sink(allowSchemaDrift: true,",
+				"select1 aggregate(groupBy(Price),",
+				"     each(match(name != 'Price'), $$ = first($$))) ~> aggregate1",
+				"aggregate1 keyGenerate(output(host_id as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey1",
+				"surrogateKey1 keyGenerate(output(room_type_id as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey2",
+				"surrogateKey2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     input(",
+				"          id as integer,",
+				"          price as decimal(10,2),",
+				"          cleanliness_rating as decimal(10,2),",
+				"          guest_satisfaction as decimal(10,2),",
+				"          person_capacity as integer,",
+				"          city_id as string,",
+				"          date_id as string,",
+				"          room_type_id as integer,",
+				"          host_id as integer,",
+				"          location_id as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
 				"          price = Price,",
 				"          cleanliness_rating = {Cleanliness Rating},",
@@ -74,9 +113,10 @@
 				"          city_id = City,",
 				"          date_id = Day,",
 				"          room_type_id = {Room Type},",
-				"          host_id = Superhost",
-				"     ),",
-				"     format: 'table') ~> sink1"
+				"          host_id = Superhost,",
+				"          host_id,",
+				"          room_type_id = {Room Type}",
+				"     )) ~> sink1"
 			]
 		}
 	}

@@ -83,9 +83,9 @@
 				"     validateSchema: false,",
 				"     input(",
 				"          id as integer,",
-				"          is_superhost as boolean,",
-				"          has_multiple_rooms as boolean,",
-				"          is_business_host as boolean",
+				"          superhost as string,",
+				"          multiple_rooms as integer,",
+				"          business_host as integer",
 				"     ),",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -96,10 +96,9 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
-				"          id,",
-				"          is_superhost = Superhost,",
-				"          is_business_host = Business,",
-				"          has_multiple_rooms = {Multiple Rooms}",
+				"          superhost = Superhost,",
+				"          business_host = Business,",
+				"          multiple_rooms = {Multiple Rooms}",
 				"     )) ~> sink1"
 			]
 		}
